@@ -1,7 +1,10 @@
 import { response } from "express"
+import bcryptjs  from "bcryptjs"
+import {validationResult} from "express-validator"
 
 //import HttpCode from '../../configs/httpCode.mjs';
-
+import Usuario from '../models/usuario.mjs'
+import recibido from '../models/guardar.mjs'
  class usuarioController {
 
     static async usuariosGet(req, res= response) {
@@ -17,10 +20,6 @@ import { response } from "express"
 
 
       return "aqui va"+a;
-
-
-
-
 
 
 
@@ -51,15 +50,36 @@ import { response } from "express"
       }
 
       static async usuariosPost(req, res= response) {
-        const algo = req.body;
+ 
+        const {nombre,correo,password,rol} = req.body;
+       
+        const usuario =   new Usuario({nombre,correo,password,rol});
+        const salt = bcryptjs.genSaltSync();
+        usuario.password = bcryptjs.hashSync(password,salt);
+
+        usuario.save();
+         
+        /*
+          guard.entrega=JSON.stringify(body);
+          
+        guard.save();*/
+
+
+
+         
+
+
         
-        console.log(req.body);
+       
+        
         res.json({
             
+          code: 201,
+          
 
 
             msg: 'post algo API',
-      algo: algo
+      usuario: usuario
     
         });
        
